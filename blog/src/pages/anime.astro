@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+
+const siteTitle = 'AgentBlog';
+
+const animeList = [
+  { title: '葬送的芙莉莲', nameJP: '葬送のフリーレン', cover: 'https://placehold.co/300x420/f5a623/white?text=葬送的芙莉莲', status: '已看完', rating: 10, year: '2023', season: '秋', type: 'TV' },
+  { title: '迷宫饭', nameJP: 'ダンジョン飯', cover: 'https://placehold.co/300x420/e74c3c/white?text=迷宫饭', status: '已看完', rating: 9, year: '2024', season: '冬', type: 'TV' },
+  { title: '我心里危险的东西 第2期', nameJP: '僕の心のヤバイやつ 第2期', cover: 'https://placehold.co/300x420/e91e63/white?text=我心里危险的东西', status: '已看完', rating: 9, year: '2024', season: '冬', type: 'TV' },
+  { title: '咒术回战 第2期', nameJP: '呪術廻戦 第2期', cover: 'https://placehold.co/300x420/9b59b6/white?text=咒术回战', status: '已看完', rating: 8, year: '2023', season: '夏', type: 'TV' },
+  { title: '进击的巨人 最终季', nameJP: '進撃の巨人 The Final Season', cover: 'https://placehold.co/300x420/2c3e50/white?text=进击的巨人', status: '已看完', rating: 10, year: '2023', season: '秋', type: 'TV' },
+  { title: '鬼灭之刃 刀匠村篇', nameJP: '鬼滅の刃 刀鍛冶の里編', cover: 'https://placehold.co/300x420/27ae60/white?text=鬼灭之刃', status: '已看完', rating: 8, year: '2023', season: '春', type: 'TV' },
+  { title: '我推的孩子', nameJP: '【推しの子】', cover: 'https://placehold.co/300x420/c0392b/white?text=我推的孩子', status: '已看完', rating: 9, year: '2023', season: '春', type: 'TV' },
+  { title: '药屋少女的呢喃', nameJP: '薬屋のひとりごと', cover: 'https://placehold.co/300x420/16a085/white?text=药屋少女的呢喃', status: '在看', rating: null, year: '2023', season: '秋', type: 'TV' },
+  { title: '想要成为影之实力者 第2期', nameJP: '陰の実力者になりたくて！ 2nd season', cover: 'https://placehold.co/300x420/8e44ad/white?text=影之实力者', status: '想看', rating: null, year: '2023', season: '秋', type: 'TV' },
+  { title: '不死少女的谋杀闹剧', nameJP: 'アンデッドガール・マーダーファルス', cover: 'https://placehold.co/300x420/d35400/white?text=不死少女', status: '想看', rating: null, year: '2023', season: '夏', type: 'TV' },
+];
+
+const statusFilters = [
+  { label: '全部', status: 'all', active: true },
+  { label: '已看完', status: '已看完' },
+  { label: '在看', status: '在看' },
+  { label: '想看', status: '想看' },
+];
+
+const yearFilters = [
+  { label: '全部', year: 'all', active: true },
+  { label: '2024', year: '2024' },
+  { label: '2023', year: '2023' },
+];
+---
+
+<BaseLayout title="追番" siteTitle={siteTitle}>
+  <Header />
+  <Banner title="追番" subtitle="记录我的二次元之旅" height="half" />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Stats -->
+    <div class="card-base p-5 mb-6 flex items-center gap-8 flex-wrap animate-fade-in-up">
+      <div class="text-center">
+        <div class="text-2xl font-bold text-[var(--color-primary)]">{animeList.length}</div>
+        <div class="text-xs text-[var(--text-muted)]">总计</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold text-[var(--color-primary)]">{animeList.filter(a => a.status === '已看完').length}</div>
+        <div class="text-xs text-[var(--text-muted)]">已看完</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold text-[var(--color-primary)]">{animeList.filter(a => a.status === '在看').length}</div>
+        <div class="text-xs text-[var(--text-muted)]">在看</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold text-[var(--color-primary)]">{animeList.filter(a => a.status === '想看').length}</div>
+        <div class="text-xs text-[var(--text-muted)]">想看</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl font-bold text-[var(--color-primary)]">
+          {(() => {
+            const rated = animeList.filter(a => a.rating !== null);
+            return rated.length > 0 ? (rated.reduce((sum, a) => sum + (a.rating || 0), 0) / rated.length).toFixed(1) : '-';
+          })()}
+        </div>
+        <div class="text-xs text-[var(--text-muted)]">平均评分</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+      <span class="text-sm font-medium text-[var(--text-muted)]">状态:</span>
+      <div class="flex flex-wrap gap-2" id="status-filters">
+        {statusFilters.map(f => (
+          <button class={`filter-tag text-sm ${f.active ? 'active' : ''}`} data-status={f.status}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+      <span class="text-sm font-medium text-[var(--text-muted)] ml-0 sm:ml-4">年份:</span>
+      <div class="flex flex-wrap gap-2" id="year-filters">
+        {yearFilters.map(f => (
+          <button class={`filter-tag text-sm ${f.active ? 'active' : ''}`} data-year={f.year}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Anime Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="anime-grid">
+      {animeList.map((anime, i) => (
+        <div 
+          class={`card-base overflow-hidden animate-fade-in-up stagger-${(i % 6) + 1}`}
+          data-status={anime.status}
+          data-year={anime.year}
+        >
+          <div class="relative aspect-[3/4] bg-[var(--btn-regular-bg)] overflow-hidden">
+            <img 
+              src={anime.cover} 
+              alt={anime.title}
+              class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              loading="lazy"
+            />
+            <div class="absolute top-2 left-2">
+              <span class={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                anime.status === '已看完' ? 'bg-green-500/90 text-white' :
+                anime.status === '在看' ? 'bg-blue-500/90 text-white' :
+                'bg-gray-500/80 text-white'
+              }`}>
+                {anime.status}
+              </span>
+            </div>
+            {anime.rating && (
+              <div class="absolute top-2 right-2 px-1.5 py-0.5 text-xs rounded bg-yellow-500/90 text-white font-bold">
+                ⭐{anime.rating}
+              </div>
+            )}
+          </div>
+          <div class="p-3">
+            <h3 class="font-medium text-sm line-clamp-1" title={anime.title}>{anime.title}</h3>
+            <p class="text-xs text-[var(--text-muted)] mt-1">{anime.year}年{anime.season}季 · {anime.type}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="text-center mt-6 text-[var(--text-muted)] text-sm" id="no-anime" style="display:none;">
+      没有找到匹配的番剧
+    </p>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  let currentStatus = 'all';
+  let currentYear = 'all';
+
+  function applyFilters() {
+    let visible = 0;
+    document.querySelectorAll('#anime-grid > div').forEach(card => {
+      const status = card.dataset.status;
+      const year = card.dataset.year;
+      const statusMatch = currentStatus === 'all' || status === currentStatus;
+      const yearMatch = currentYear === 'all' || year === currentYear;
+      const show = statusMatch && yearMatch;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('no-anime').style.display = visible === 0 ? '' : 'none';
+  }
+
+  document.querySelectorAll('#status-filters .filter-tag').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#status-filters .filter-tag').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentStatus = btn.dataset.status;
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('#year-filters .filter-tag').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#year-filters .filter-tag').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentYear = btn.dataset.year;
+      applyFilters();
+    });
+  });
+</script>

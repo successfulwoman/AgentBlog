@@ -1,0 +1,29 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  height?: 'full' | 'half';
+}
+
+const { title, subtitle, height = 'full' } = Astro.props;
+const heightClass = height === 'full' ? 'h-[65vh] min-h-[400px]' : 'h-[35vh] min-h-[250px]';
+---
+
+<div class={`banner ${heightClass} relative flex items-center justify-center overflow-hidden`}>
+  <!-- Decorative elements -->
+  <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent"></div>
+  <div class="absolute top-20 left-10 w-72 h-72 bg-[var(--color-primary)]/5 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-10 right-10 w-96 h-96 bg-[var(--color-primary)]/8 rounded-full blur-3xl"></div>
+  
+  <!-- Content -->
+  <div class="relative z-10 text-center px-4">
+    <h1 class="banner-title text-white drop-shadow-lg mb-4">
+      {title}
+    </h1>
+    {subtitle && (
+      <p class="text-white/80 text-lg md:text-xl animate-fade-in-up stagger-2">
+        {subtitle}
+      </p>
+    )}
+  </div>
+</div>

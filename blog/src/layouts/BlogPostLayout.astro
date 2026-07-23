@@ -1,0 +1,36 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  siteTitle?: string;
+}
+const { title, description, siteTitle } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon/favicon.svg" />
+    <title>{title ? `${title} - ${siteTitle || 'AgentBlog'}` : siteTitle || 'AgentBlog'}</title>
+    <meta name="description" content={description || '一个简单的个人博客'} />
+    <meta property="og:site_name" content={siteTitle || 'AgentBlog'} />
+    <meta property="og:title" content={title || siteTitle || 'AgentBlog'} />
+    <meta property="og:description" content={description || '一个简单的个人博客'} />
+    <meta property="og:type" content="website" />
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        const hue = localStorage.getItem('hue') || '30';
+        document.documentElement.style.setProperty('--hue', hue);
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-[var(--page-bg)] text-[var(--text-primary)] transition-colors duration-300">
+    <div class="top-gradient-highlight"></div>
+    <slot />
+  </body>
+</html>

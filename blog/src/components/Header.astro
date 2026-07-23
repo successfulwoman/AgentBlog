@@ -1,0 +1,86 @@
+---
+const navItems = [
+  { label: '主页', href: '/' },
+  { label: '归档', href: '/archive' },
+  { label: '关于', href: '/about' },
+  { label: '友链', href: '/friends' },
+  { label: '项目', href: '/projects' },
+  { label: '追番', href: '/anime' },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--page-bg)]/80 border-b border-[var(--line-divider)]">
+  <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="text-xl font-bold hover:text-[var(--color-primary)] transition-colors">
+      AgentBlog
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center gap-1">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class="btn-plain rounded-lg h-10 px-4 font-medium text-sm hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all"
+        >
+          {item.label}
+        </a>
+      ))}
+      
+      <!-- Theme Toggle -->
+      <button
+        id="theme-toggle"
+        class="btn-regular rounded-lg h-10 w-10 ml-2"
+        aria-label="Toggle theme"
+        onclick="toggleTheme()"
+      >
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden btn-regular rounded-lg h-10 w-10"
+      aria-label="Menu"
+      onclick="toggleMobileMenu()"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden fixed inset-0 top-16 bg-[var(--page-bg)] z-40 p-4">
+    <div class="flex flex-col gap-2">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class="btn-plain rounded-lg px-4 py-3 text-lg font-medium hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all"
+        >
+          {item.label}
+        </a>
+      ))}
+      <button
+        class="btn-regular rounded-lg px-4 py-3 text-lg mt-2"
+        onclick="toggleTheme(); toggleMobileMenu();"
+      >
+        <span class="dark:hidden">🌙 暗色模式</span>
+        <span class="hidden dark:inline">☀️ 亮色模式</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  function toggleMobileMenu() {
+    document.getElementById('mobile-menu')?.classList.toggle('open');
+  }
+</script>

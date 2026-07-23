@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+
+const siteTitle = 'AgentBlog';
+
+const projects = [
+  {
+    name: '个人博客系统',
+    description: '基于 Astro 构建的现代化个人博客，支持暗色模式和响应式布局。',
+    url: 'https://github.com',
+    tech: ['Astro', 'Tailwind CSS', 'TypeScript'],
+    stars: 128,
+    status: 'active'
+  },
+  {
+    name: 'Docker 开发环境',
+    description: '一键搭建本地开发环境的 Docker Compose 配置，包含数据库、缓存、消息队列等。',
+    url: 'https://github.com',
+    tech: ['Docker', 'Shell', 'YAML'],
+    stars: 256,
+    status: 'active'
+  },
+  {
+    name: '人脸情绪识别',
+    description: '基于深度学习的人脸情绪识别系统，支持实时摄像头检测。',
+    url: 'https://github.com',
+    tech: ['Python', 'OpenCV', 'PaddlePaddle'],
+    stars: 89,
+    status: 'completed'
+  },
+  {
+    name: '边缘计算模拟平台',
+    description: '用于模拟边缘计算场景的实验平台，支持资源调度和任务分配。',
+    url: 'https://github.com',
+    tech: ['Python', 'Docker', 'gRPC'],
+    stars: 45,
+    status: 'development'
+  },
+  {
+    name: 'OpenStack 部署工具',
+    description: '简化 OpenStack 私有云部署的自动化工具集。',
+    url: 'https://github.com',
+    tech: ['Ansible', 'Python', 'Shell'],
+    stars: 67,
+    status: 'completed'
+  },
+  {
+    name: '智能相册管理',
+    description: '基于 AI 的相册管理工具，支持自动分类和人脸识别。',
+    url: 'https://github.com',
+    tech: ['Python', 'React', 'TensorFlow'],
+    stars: 34,
+    status: 'development'
+  },
+];
+
+const filters = [
+  { label: '全部', active: true },
+  { label: '活跃开发', status: 'active' },
+  { label: '已完成', status: 'completed' },
+  { label: '开发中', status: 'development' },
+];
+---
+
+<BaseLayout title="项目" siteTitle={siteTitle}>
+  <Header />
+  <Banner title="项目展示" subtitle="我的开源项目" height="half" />
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-2 mb-6" id="project-filters">
+      {filters.map(f => (
+        <button class={`filter-tag ${f.active ? 'active' : ''}`} data-status={f.status || 'all'}>
+          {f.label}
+        </button>
+      ))}
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="projects-grid">
+      {projects.map((project, i) => (
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class={`card-base p-6 block animate-fade-in-up stagger-${(i % 6) + 1}`}
+          data-status={project.status}
+        >
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-semibold text-lg">{project.name}</h3>
+            <span class="flex items-center gap-1 text-sm text-[var(--text-muted)]">
+              ⭐ {project.stars}
+            </span>
+          </div>
+          <p class="text-sm text-[var(--text-muted)] mb-4 line-clamp-2">
+            {project.description}
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            {project.tech.map(t => (
+              <span class="px-2 py-0.5 text-xs rounded-full bg-[var(--btn-regular-bg)]">{t}</span>
+            ))}
+          </div>
+          <div class="mt-3">
+            <span class={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
+              project.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+              project.status === 'completed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+              'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+            }`}>
+              <span class={`w-1.5 h-1.5 rounded-full ${
+                project.status === 'active' ? 'bg-green-500' :
+                project.status === 'completed' ? 'bg-blue-500' :
+                'bg-yellow-500'
+              }`}></span>
+              {project.status === 'active' ? '活跃开发' : project.status === 'completed' ? '已完成' : '开发中'}
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('#project-filters .filter-tag').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const status = btn.dataset.status;
+      document.querySelectorAll('#project-filters .filter-tag').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('#projects-grid > a').forEach(card => {
+        if (status === 'all') {
+          card.style.display = '';
+        } else {
+          card.style.display = card.dataset.status === status ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>

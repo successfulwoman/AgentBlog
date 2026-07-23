@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+import Card from '../components/Card.astro';
+
+const siteTitle = 'AgentBlog';
+const allPosts = [
+  { title: '使用 Docker 构建高效开发环境', description: '详细介绍如何使用 Docker 和 Docker Compose 搭建本地开发环境。', href: '/archive/docker-dev-env', date: '2024-12-15', category: '开发工具', tags: ['Docker', '容器', '开发环境'] },
+  { title: 'Python 图像处理入门：OpenCV 基础教程', description: '从零开始学习 OpenCV，掌握图像处理基础操作。', href: '/archive/opencv-basics', date: '2024-11-28', category: '学习笔记', tags: ['Python', 'OpenCV', '图像处理'] },
+  { title: '深入理解 Linux 网络栈', description: '探索 Linux 内核网络栈的工作原理。', href: '/archive/linux-network-stack', date: '2024-11-10', category: '学习文章', tags: ['Linux', '网络'] },
+  { title: 'Git 版本控制最佳实践', description: '分享团队协作中 Git 的使用规范。', href: '/archive/git-best-practices', date: '2024-10-22', category: '开发工具', tags: ['Git', '版本控制'] },
+  { title: '机器学习基础：从线性回归到神经网络', description: '系统梳理机器学习核心概念。', href: '/archive/ml-basics', date: '2024-10-05', category: '学习笔记', tags: ['人工智能', '机器学习', '深度学习'] },
+  { title: '边缘计算：让计算更靠近数据源', description: '探讨边缘计算的概念、架构和应用。', href: '/archive/edge-computing', date: '2024-09-18', category: '学习文章', tags: ['边缘计算', '云计算', '端侧设备'] },
+  { title: 'CentOS 系统管理入门指南', description: 'CentOS 的基本使用和系统管理技巧。', href: '/archive/centos-guide', date: '2024-08-30', category: '学习笔记', tags: ['CentOS', 'Linux', '安装'] },
+  { title: 'OpenStack 私有云部署实践', description: '记录 OpenStack 私有云平台的部署过程。', href: '/archive/openstack-deploy', date: '2024-08-12', category: '学习文章', tags: ['OpenStack', '云计算', '虚拟化'] },
+  { title: 'PaddlePaddle 深度学习框架入门', description: '百度飞桨框架的基础使用教程。', href: '/archive/paddlepaddle-intro', date: '2024-07-25', category: '学习笔记', tags: ['PaddlePaddle', '深度学习', '神经网络'] },
+  { title: '人脸情绪识别项目实战', description: '基于深度学习的人脸情绪识别完整项目。', href: '/archive/emotion-recognition', date: '2024-07-08', category: '项目展示', tags: ['人脸情绪识别', 'Python', '机器视觉'] },
+];
+
+const categories = [
+  { label: '全部', count: allPosts.length },
+  { label: '开发工具', count: 2 },
+  { label: '学习文章', count: 3 },
+  { label: '学习笔记', count: 4 },
+  { label: '项目展示', count: 1 },
+];
+
+const allTags = [
+  { label: 'Docker', count: 1 }, { label: 'Python', count: 2 }, { label: 'OpenCV', count: 1 },
+  { label: 'Linux', count: 2 }, { label: 'Git', count: 1 }, { label: '人工智能', count: 1 },
+  { label: '机器学习', count: 1 }, { label: '深度学习', count: 2 }, { label: '边缘计算', count: 1 },
+  { label: '云计算', count: 2 }, { label: '端侧设备', count: 1 }, { label: '容器', count: 1 },
+  { label: 'CentOS', count: 1 }, { label: 'OpenStack', count: 1 }, { label: 'PaddlePaddle', count: 1 },
+  { label: '人脸情绪识别', count: 1 }, { label: '图像处理', count: 1 }, { label: '网络', count: 1 },
+  { label: '版本控制', count: 1 }, { label: '开发环境', count: 1 }, { label: '安装', count: 1 },
+  { label: '虚拟化', count: 1 }, { label: '神经网络', count: 1 }, { label: '机器视觉', count: 1 },
+];
+---
+
+<BaseLayout title="归档" siteTitle={siteTitle}>
+  <Header />
+  <Banner title="归档" subtitle="所有文章列表" height="half" />
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Posts -->
+      <div class="lg:col-span-2">
+        <!-- Category Filters -->
+        <div class="flex flex-wrap gap-2 mb-6" id="category-filters">
+          {categories.map(cat => (
+            <button class={`filter-tag ${cat.label === '全部' ? 'active' : ''}`} data-category={cat.label}>
+              {cat.label} ({cat.count})
+            </button>
+          ))}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="posts-grid">
+          {allPosts.map((post, i) => (
+            <div class={`stagger-${(i % 6) + 1}`}>
+              <Card {...post} />
+            </div>
+          ))}
+        </div>
+        <p class="text-center mt-8 text-[var(--text-muted)] text-sm" id="no-results" style="display:none;">
+          没有找到匹配的文章
+        </p>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <!-- Categories -->
+        <div class="card-base p-5">
+          <h3 class="text-lg font-semibold mb-4">📂 分类</h3>
+          <div class="space-y-1">
+            {categories.map(cat => (
+              <button 
+                class="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[var(--btn-hover-bg)] transition-colors text-sm text-left cat-sidebar-btn"
+                data-category={cat.label}
+              >
+                <span>{cat.label}</span>
+                <span class="text-[var(--text-muted)]">{cat.count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="card-base p-5">
+          <h3 class="text-lg font-semibold mb-4">🏷️ 标签</h3>
+          <div class="flex flex-wrap gap-2">
+            {allTags.map(tag => (
+              <button class="filter-tag text-xs tag-btn" data-tag={tag.label}>
+                {tag.label} ({tag.count})
+              </button>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Simple client-side filtering
+  document.querySelectorAll('#category-filters .filter-tag, .cat-sidebar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.dataset.category;
+      // Update active states
+      document.querySelectorAll('#category-filters .filter-tag').forEach(b => {
+        b.classList.toggle('active', b.dataset.category === category);
+      });
+      filterPosts(category, null);
+    });
+  });
+
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag;
+      const isActive = btn.classList.contains('active');
+      document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+      if (!isActive) btn.classList.add('active');
+      filterPosts(null, isActive ? null : tag);
+    });
+  });
+
+  function filterPosts(category, tag) {
+    let visible = 0;
+    document.querySelectorAll('#posts-grid > div').forEach(card => {
+      const catEl = card.querySelector('[class*="bg-\\[var\\(--color-primary\\)\\]\\/10"]');
+      const tagEls = card.querySelectorAll('.rounded-full.bg-\\[var\\(--btn-regular-bg\\)\\]');
+      const postCategory = catEl?.textContent?.trim();
+      const postTags = Array.from(tagEls).map(t => t.textContent.trim());
+      
+      let show = true;
+      if (category && category !== '全部' && postCategory !== category) show = false;
+      if (tag && !postTags.includes(tag)) show = false;
+      
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+  }
+</script>

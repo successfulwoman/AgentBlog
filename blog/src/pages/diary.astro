@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+
+const siteTitle = 'AgentBlog';
+
+const diaryEntries = [
+  {
+    date: '2024-12-20',
+    title: '今天开始学习 Rust',
+    content: '一直听说 Rust 是一门很有前途的系统编程语言，今天终于下定决心开始学习了。从官方的 The Book 开始，感觉所有权系统很有挑战性但也很有意思。',
+    mood: '😊',
+    weather: '☀️'
+  },
+  {
+    date: '2024-12-18',
+    title: '完成了博客的重构',
+    content: '把博客从旧的框架迁移到了 Astro，整个过程很顺利。Astro 的开发体验真的很棒，特别是它的 Islands 架构理念非常先进。',
+    mood: '🎉',
+    weather: '⛅'
+  },
+  {
+    date: '2024-12-15',
+    title: '参加了一场技术分享会',
+    content: '今天参加了线上的技术分享会，主题是边缘计算的最新进展。学到了很多关于 WebAssembly 在边缘场景下的应用，收获满满。',
+    mood: '🤓',
+    weather: '🌧️'
+  },
+  {
+    date: '2024-12-10',
+    title: 'Docker 学习笔记整理',
+    content: '花了一下午的时间整理了这段时间学习 Docker 的笔记，写了篇博客文章。Docker Compose 的多服务编排真的很方便，强烈推荐还没用过的朋友试试。',
+    mood: '📝',
+    weather: '⛅'
+  },
+  {
+    date: '2024-12-05',
+    title: '配置 Neovim 开发环境',
+    content: '尝试用 LazyVim 配置了一个现代化的 Neovim 开发环境，用 Lua 写配置确实比 VimScript 舒服多了。花了不少时间，但最终效果很满意。',
+    mood: '🔧',
+    weather: '☁️'
+  },
+  {
+    date: '2024-12-01',
+    title: '12月的新开始',
+    content: '新的一个月开始了！制定了这个月的学习计划：深入学习 Kubernetes、完成 OpenCV 的项目实战、每天坚持刷一道算法题。加油！',
+    mood: '💪',
+    weather: '☀️'
+  },
+];
+
+const moods = [
+  { label: '全部', mood: 'all', active: true },
+  { label: '😊 开心', mood: '😊' },
+  { label: '🎉 庆祝', mood: '🎉' },
+  { label: '🤓 学习', mood: '🤓' },
+  { label: '📝 记录', mood: '📝' },
+  { label: '🔧 折腾', mood: '🔧' },
+  { label: '💪 努力', mood: '💪' },
+];
+---
+
+<BaseLayout title="日记" siteTitle={siteTitle}>
+  <Header />
+  <Banner title="日记" subtitle="记录每一天" height="half" />
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <!-- Mood Filters -->
+    <div class="flex flex-wrap gap-2 mb-6" id="mood-filters">
+      {moods.map(m => (
+        <button class={`filter-tag ${m.active ? 'active' : ''}`} data-mood={m.mood}>
+          {m.label}
+        </button>
+      ))}
+    </div>
+
+    <!-- Timeline -->
+    <div class="space-y-6">
+      {diaryEntries.map((entry, i) => (
+        <div 
+          class={`card-base p-5 md:p-6 animate-fade-in-up stagger-${(i % 6) + 1} relative`}
+          data-mood={entry.mood}
+        >
+          <!-- Timeline line -->
+          <div class="absolute left-[-1px] top-0 bottom-0 w-0.5 bg-[var(--color-primary)]/20 hidden md:block"></div>
+          <div class="absolute left-[-5px] top-8 w-2.5 h-2.5 rounded-full bg-[var(--color-primary)] hidden md:block"></div>
+          
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-2xl">{entry.mood}</span>
+            <div>
+              <h3 class="font-semibold">{entry.title}</h3>
+              <div class="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                <time datetime={entry.date}>{entry.date}</time>
+                <span>{entry.weather}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-[var(--text-muted)] leading-relaxed ml-0 md:ml-11">
+            {entry.content}
+          </p>
+        </div>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('#mood-filters .filter-tag').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mood = btn.dataset.mood;
+      document.querySelectorAll('#mood-filters .filter-tag').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('[data-mood]').forEach(card => {
+        if (mood === 'all') {
+          card.style.display = '';
+        } else {
+          card.style.display = card.dataset.mood === mood ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>

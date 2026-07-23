@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+import Card from '../components/Card.astro';
+
+const siteTitle = 'AgentBlog';
+const posts = [
+  {
+    title: '使用 Docker 构建高效开发环境',
+    description: '详细介绍如何使用 Docker 和 Docker Compose 搭建本地开发环境，包括多服务编排、网络配置和数据持久化。',
+    href: '/archive/docker-dev-env',
+    date: '2024-12-15',
+    category: '开发工具',
+    tags: ['Docker', '容器', '开发环境']
+  },
+  {
+    title: 'Python 图像处理入门：OpenCV 基础教程',
+    description: '从零开始学习 OpenCV，掌握图像读取、颜色空间转换、滤波和边缘检测等基础操作。',
+    href: '/archive/opencv-basics',
+    date: '2024-11-28',
+    category: '学习笔记',
+    tags: ['Python', 'OpenCV', '图像处理']
+  },
+  {
+    title: '深入理解 Linux 网络栈',
+    description: '探索 Linux 内核网络栈的工作原理，包括数据包处理流程、netfilter 框架和常见的网络调优参数。',
+    href: '/archive/linux-network-stack',
+    date: '2024-11-10',
+    category: '学习文章',
+    tags: ['Linux', '网络']
+  },
+  {
+    title: 'Git 版本控制最佳实践',
+    description: '分享团队协作中 Git 的使用规范，包括分支策略、commit 规范、code review 流程等。',
+    href: '/archive/git-best-practices',
+    date: '2024-10-22',
+    category: '开发工具',
+    tags: ['Git', '版本控制']
+  },
+  {
+    title: '机器学习基础：从线性回归到神经网络',
+    description: '系统梳理机器学习核心概念，从最简单的线性回归开始，逐步深入到神经网络和深度学习。',
+    href: '/archive/ml-basics',
+    date: '2024-10-05',
+    category: '学习笔记',
+    tags: ['人工智能', '机器学习', '深度学习']
+  },
+  {
+    title: '边缘计算：让计算更靠近数据源',
+    description: '探讨边缘计算的概念、架构和典型应用场景，以及在物联网时代的重要意义。',
+    href: '/archive/edge-computing',
+    date: '2024-09-18',
+    category: '学习文章',
+    tags: ['边缘计算', '云计算', '端侧设备']
+  }
+];
+
+const categories = [
+  { label: '全部', count: 6, active: true },
+  { label: '开发工具', count: 2 },
+  { label: '学习文章', count: 2 },
+  { label: '学习笔记', count: 2 },
+];
+
+const allTags = [
+  { label: 'Docker', count: 1 },
+  { label: 'Python', count: 1 },
+  { label: 'OpenCV', count: 1 },
+  { label: 'Linux', count: 1 },
+  { label: 'Git', count: 1 },
+  { label: '人工智能', count: 1 },
+  { label: '机器学习', count: 1 },
+  { label: '深度学习', count: 1 },
+  { label: '边缘计算', count: 1 },
+  { label: '云计算', count: 1 },
+];
+---
+
+<BaseLayout title="AgentBlog" description="一个简单的个人博客" siteTitle={siteTitle}>
+  <Header />
+  
+  <Banner title="欢迎来到 AgentBlog" subtitle="记录学习 · 分享技术 · 探索世界" />
+
+  <main class="max-w-6xl mx-auto px-4 -mt-12 relative z-10">
+    <!-- Notice -->
+    <div class="card-base p-4 mb-8 flex items-center gap-3 animate-fade-in-up">
+      <span class="text-xl">📢</span>
+      <div class="flex-1">
+        <p class="text-sm font-medium">公告</p>
+        <p class="text-sm text-[var(--text-muted)]">欢迎来到我的博客！这里记录了我的技术学习和生活点滴。</p>
+      </div>
+      <a href="/about" class="btn-primary px-4 py-2 text-sm rounded-lg">了解更多</a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-bold mb-6">📝 最新文章</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {posts.map(post => <Card {...post} />)}
+        </div>
+        <div class="text-center mt-8">
+          <a href="/archive" class="btn-primary px-6 py-3 rounded-lg inline-flex items-center gap-2">
+            查看全部文章
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <!-- Categories -->
+        <div class="card-base p-5">
+          <h3 class="text-lg font-semibold mb-4">📂 分类</h3>
+          <div class="space-y-2">
+            {categories.map(cat => (
+              <a 
+                href={cat.label === '全部' ? '/archive' : `/archive?category=${cat.label}`}
+                class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[var(--btn-hover-bg)] transition-colors text-sm"
+              >
+                <span>{cat.label}</span>
+                <span class="text-[var(--text-muted)]">{cat.count}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="card-base p-5">
+          <h3 class="text-lg font-semibold mb-4">🏷️ 标签</h3>
+          <div class="flex flex-wrap gap-2">
+            {allTags.map(tag => (
+              <a 
+                href={`/archive?tag=${tag.label}`}
+                class="filter-tag text-xs"
+              >
+                {tag.label} ({tag.count})
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
