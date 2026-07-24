@@ -105,15 +105,41 @@ const allTags = [
 </BaseLayout>
 
 <script>
-  // Simple client-side filtering
+  let currentCategory = null;
+  let currentTag = null;
+
+  // Read initial filter from URL query params
+  (function initFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const catFromURL = params.get('category');
+    const tagFromURL = params.get('tag');
+    
+    if (catFromURL) {
+      currentCategory = catFromURL;
+      document.querySelectorAll('#category-filters .filter-tag').forEach(b => {
+        b.classList.toggle('active', b.dataset.category === catFromURL);
+      });
+    }
+    if (tagFromURL) {
+      currentTag = tagFromURL;
+      document.querySelectorAll('.tag-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tag === tagFromURL);
+      });
+    }
+    if (catFromURL || tagFromURL) {
+      applyFilters();
+    }
+  })();
+
   document.querySelectorAll('#category-filters .filter-tag, .cat-sidebar-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const category = btn.dataset.category;
+      currentCategory = category === '全部' ? null : category;
       // Update active states
       document.querySelectorAll('#category-filters .filter-tag').forEach(b => {
         b.classList.toggle('active', b.dataset.category === category);
       });
-      filterPosts(category, null);
+      applyFilters();
     });
   });
 
@@ -122,24 +148,23 @@ const allTags = [
       const tag = btn.dataset.tag;
       const isActive = btn.classList.contains('active');
       document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+      currentTag = isActive ? null : tag;
       if (!isActive) btn.classList.add('active');
-      filterPosts(null, isActive ? null : tag);
+      applyFilters();
     });
   });
 
-  function filterPosts(category, tag) {
+  function applyFilters() {
     let visible = 0;
-    document.querySelectorAll('#posts-grid > div').forEach(card => {
-      const catEl = card.querySelector('[class*="bg-\\[var\\(--color-primary\\)\\]\\/10"]');
-      const tagEls = card.querySelectorAll('.rounded-full.bg-\\[var\\(--btn-regular-bg\\)\\]');
-      const postCategory = catEl?.textContent?.trim();
-      const postTags = Array.from(tagEls).map(t => t.textContent.trim());
+    document.querySelectorAll('#posts-grid .card-base').forEach(card => {
+      const postCategory = card.dataset.category || '';
+      const postTags = JSON.parse(card.dataset.tags || '[]');
       
       let show = true;
-      if (category && category !== '全部' && postCategory !== category) show = false;
-      if (tag && !postTags.includes(tag)) show = false;
+      if (currentCategory && postCategory !== currentCategory) show = false;
+      if (currentTag && !postTags.includes(currentTag)) show = false;
       
-      card.style.display = show ? '' : 'none';
+      card.closest('#posts-grid > div').style.display = show ? '' : 'none';
       if (show) visible++;
     });
     document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';

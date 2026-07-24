@@ -11,7 +11,7 @@ export interface Props {
 const { title, description, href, date, tags, category } = Astro.props;
 ---
 
-<a href={href} class="card-base p-6 block animate-fade-in-up">
+<a href={href} class="card-base p-6 block animate-fade-in-up group" data-category={category || ''} data-tags={JSON.stringify(tags || [])}>
   {category && (
     <span class="inline-block text-xs font-medium px-2 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] mb-3">
       {category}

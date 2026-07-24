@@ -1,4 +1,6 @@
 ---
+const currentPath = Astro.url.pathname;
+
 const navItems = [
   { label: '主页', href: '/' },
   { label: '归档', href: '/archive' },
@@ -21,7 +23,11 @@ const navItems = [
       {navItems.map(item => (
         <a
           href={item.href}
-          class="btn-plain rounded-lg h-10 px-4 font-medium text-sm hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all"
+          class={`btn-plain rounded-lg h-10 px-4 font-medium text-sm hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all ${
+            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              ? 'text-[var(--color-primary)] bg-[var(--btn-hover-bg)]'
+              : ''
+          }`}
         >
           {item.label}
         </a>
@@ -58,7 +64,12 @@ const navItems = [
       {navItems.map(item => (
         <a
           href={item.href}
-          class="btn-plain rounded-lg px-4 py-3 text-lg font-medium hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all"
+          class={`btn-plain rounded-lg px-4 py-3 text-lg font-medium hover:text-[var(--color-primary)] hover:bg-[var(--btn-hover-bg)] transition-all ${
+            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+              ? 'text-[var(--color-primary)] bg-[var(--btn-hover-bg)]'
+              : ''
+          }`}
+          onclick="toggleMobileMenu()"
         >
           {item.label}
         </a>
